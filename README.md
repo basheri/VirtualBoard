@@ -108,6 +108,4 @@ virtualboard-ai/
 
 The platform uses a `LanguageContext` provider to handle EN/AR switching. It automatically adjusts `dir="rtl"` for Arabic layouts and swaps fonts (IBM Plex Sans Arabic).
 
-## 📄 License
 
-[MIT](LICENSE)

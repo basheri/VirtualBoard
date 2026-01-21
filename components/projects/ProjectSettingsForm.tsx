@@ -13,7 +13,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { 
+import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -44,7 +44,7 @@ export function ProjectSettingsForm({ project }: ProjectSettingsFormProps) {
     defaultValues: {
       title: project.title,
       description: project.description || '',
-      strategy: project.strategy as any,
+      strategy: project.strategy,
     },
   });
 
@@ -54,8 +54,8 @@ export function ProjectSettingsForm({ project }: ProjectSettingsFormProps) {
       await updateProjectAction(project.id, data);
       toast.success('Project updated successfully');
       router.refresh();
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to update project');
+    } catch (error: unknown) {
+      toast.error(error instanceof Error ? error.message : 'Failed to update project');
     } finally {
       setLoading(false);
     }
@@ -67,8 +67,8 @@ export function ProjectSettingsForm({ project }: ProjectSettingsFormProps) {
       await deleteProjectAction(project.id);
       toast.success('Project deleted successfully');
       router.push('/dashboard/projects');
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to delete project');
+    } catch (error: unknown) {
+      toast.error(error instanceof Error ? error.message : 'Failed to delete project');
     } finally {
       setDeleting(false);
     }
@@ -107,7 +107,7 @@ export function ProjectSettingsForm({ project }: ProjectSettingsFormProps) {
                   <FormItem>
                     <FormLabel>Description (Optional)</FormLabel>
                     <FormControl>
-                      <Textarea 
+                      <Textarea
                         placeholder="Describe your project goals"
                         className="resize-none"
                         {...field}
@@ -179,7 +179,7 @@ export function ProjectSettingsForm({ project }: ProjectSettingsFormProps) {
                 <DialogClose asChild>
                   <Button variant="outline">Cancel</Button>
                 </DialogClose>
-                <Button 
+                <Button
                   variant="destructive"
                   onClick={onDelete}
                   disabled={deleting}

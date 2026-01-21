@@ -5,7 +5,6 @@ import { createMeetingSchema, type CreateMeeting } from '@/lib/schemas/meeting';
 import { revalidatePath } from 'next/cache';
 
 export async function createMeetingAction(projectId: string, data: CreateMeeting) {
-  console.log('createMeetingAction called', { projectId, data });
   const supabase = await createServerClient();
   const { data: { user } } = await supabase.auth.getUser();
 

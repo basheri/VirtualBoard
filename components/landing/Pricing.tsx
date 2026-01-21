@@ -35,15 +35,14 @@ export function Pricing() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
               viewport={{ once: true }}
-              className={`relative bg-white p-8 rounded-2xl border ${
-                key === 'professional' 
-                  ? 'border-primary shadow-xl ring-1 ring-primary/5' 
-                  : 'border-gray-100 hover:shadow-lg'
-              } transition-all flex flex-col`}
+              className={`relative bg-white p-8 rounded-2xl border ${key === 'professional'
+                ? 'border-primary shadow-xl ring-1 ring-primary/5'
+                : 'border-gray-100 hover:shadow-lg'
+                } transition-all flex flex-col`}
             >
-              {key === 'professional' && (
+              {key === 'professional' && 'badge' in data && (
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-primary text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wide">
-                  {(data as any).badge}
+                  {String(data.badge)}
                 </div>
               )}
 
@@ -66,8 +65,8 @@ export function Pricing() {
               </ul>
 
               <Link href={key === 'enterprise' ? '#contact' : '/login'} className="block">
-                <Button 
-                  className="w-full" 
+                <Button
+                  className="w-full"
                   variant={key === 'professional' ? 'default' : 'outline'}
                 >
                   {data.cta}

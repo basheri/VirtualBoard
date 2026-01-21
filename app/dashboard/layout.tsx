@@ -1,5 +1,4 @@
 import { createServerClient } from '@/lib/supabase/server';
-import { redirect } from 'next/navigation';
 import { Sidebar } from '@/components/shared/Sidebar';
 import { Header } from '@/components/shared/Header';
 
@@ -9,14 +8,10 @@ export default async function DashboardLayout({
   children: React.ReactNode;
 }) {
   const supabase = await createServerClient();
-  
+
   const {
     data: { user },
   } = await supabase.auth.getUser();
-
-  if (!user) {
-    redirect('/login');
-  }
 
   return (
     <div className="flex h-screen bg-muted/40">

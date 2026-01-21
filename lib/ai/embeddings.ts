@@ -9,9 +9,14 @@ const openrouter = createOpenRouter({
 
 export async function generateEmbedding(text: string): Promise<number[]> {
   const { embedding } = await embed({
-    model: openrouter.textEmbeddingModel('openai/text-embedding-3-small') as any,
+    model: openrouter.textEmbeddingModel('openai/text-embedding-3-small'),
     value: text,
   });
+
+  // GAP-010: Validate embedding dimension (openai/text-embedding-3-small is 1536)
+  if (embedding.length !== 1536) {
+    throw new Error(`Invalid embedding dimension: expected 1536, got ${embedding.length}`);
+  }
 
   return embedding;
 }
@@ -23,14 +28,14 @@ export async function storeDocumentEmbedding(
   title: string
 ): Promise<void> {
   const supabase = await createServerClient();
-  
+
   const chunks = recursiveTextSplit(content);
   const totalChunks = chunks.length;
-  
+
   for (let i = 0; i < chunks.length; i++) {
     const chunk = chunks[i];
     const embedding = await generateEmbedding(chunk);
-    
+
     const { error } = await supabase
       .from('document_embeddings')
       .insert({

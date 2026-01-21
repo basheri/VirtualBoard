@@ -10,6 +10,13 @@ export const content = {
       cta: 'Start Free Trial',
       login: 'Login',
     },
+    sidebar: {
+      dashboard: 'Dashboard',
+      projects: 'Projects',
+      team: 'Team',
+      settings: 'Settings',
+      subtitle: 'Advisory Board Platform',
+    },
     hero: {
       eyebrow: 'AI-Powered Strategic Advisory',
       headline: 'Your Virtual Board of Directors, Available 24/7',
@@ -182,6 +189,13 @@ export const content = {
       contact: 'تواصل معنا',
       cta: 'ابدأ تجربتك المجانية',
       login: 'تسجيل الدخول',
+    },
+    sidebar: {
+      dashboard: 'لوحة التحكم',
+      projects: 'المشاريع',
+      team: 'الفريق',
+      settings: 'الإعدادات',
+      subtitle: 'منصة المجلس الاستشاري',
     },
     hero: {
       eyebrow: 'استشارات استراتيجية مدعومة بالذكاء الاصطناعي',

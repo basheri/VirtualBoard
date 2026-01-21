@@ -13,6 +13,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Loader2 } from 'lucide-react';
 
 export function ProjectForm() {
   const [loading, setLoading] = useState(false);
@@ -29,16 +30,17 @@ export function ProjectForm() {
 
   const onSubmit = async (data: CreateProject) => {
     setLoading(true);
-    
+
     try {
       const result = await createProjectAction(data);
       toast.success('Project created successfully');
       router.push(`/dashboard/projects/${result.id}`);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error creating project:', error);
-      toast.error(error.message || 'Failed to create project');
+      const errorMessage = error instanceof Error ? error.message : 'Failed to create project';
+      toast.error(errorMessage);
       form.setError('root', {
-        message: error.message || 'Failed to create project. Please try again.',
+        message: errorMessage,
       });
     } finally {
       setLoading(false);
@@ -46,7 +48,7 @@ export function ProjectForm() {
   };
 
   return (
-    <Card>
+    <Card className="hover-lift">
       <CardHeader>
         <CardTitle>Create New Project</CardTitle>
         <CardDescription>
@@ -61,14 +63,18 @@ export function ProjectForm() {
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Project Title</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter project title" {...field} />
+                    <Input
+                      placeholder="Enter project title"
+                      floatingLabel
+                      label="Project Title"
+                      error={form.formState.errors.title?.message}
+                      {...field}
+                    />
                   </FormControl>
                   <FormDescription>
                     Choose a descriptive title for your advisory board project
                   </FormDescription>
-                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -78,10 +84,13 @@ export function ProjectForm() {
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Description (Optional)</FormLabel>
                   <FormControl>
-                    <Textarea 
+                    <Textarea
                       placeholder="Describe your project goals and context"
+                      label="Description (Optional)"
+                      showCharCount
+                      maxCharCount={500}
+                      error={form.formState.errors.description?.message}
                       className="resize-none"
                       {...field}
                     />
@@ -89,7 +98,6 @@ export function ProjectForm() {
                   <FormDescription>
                     Provide context about your business or project objectives
                   </FormDescription>
-                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -121,13 +129,20 @@ export function ProjectForm() {
             />
 
             {form.formState.errors.root && (
-              <div className="text-sm text-destructive">
+              <div className="text-sm text-destructive animate-slide-down">
                 {form.formState.errors.root.message}
               </div>
             )}
 
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? 'Creating Project...' : 'Create Project'}
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Creating Project...
+                </>
+              ) : (
+                'Create Project'
+              )}
             </Button>
           </form>
         </Form>

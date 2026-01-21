@@ -4,21 +4,31 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { createBrowserClient } from '@/lib/supabase/client';
-import { LogOut, Settings, User, Globe } from 'lucide-react';
+import { LogOut, Settings, User, Globe, Moon, Sun } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useLanguage } from '@/hooks/useLanguage';
+import { useTheme } from 'next-themes';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
 export function Header({ user }: { user: any }) {
   const supabase = createBrowserClient();
   const router = useRouter();
-  const { language, setLanguage, dir } = useLanguage();
+  const { language, setLanguage } = useLanguage();
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  // Avoid hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const getInitials = (email: string) => {
     return email.substring(0, 2).toUpperCase();
   };
 
   const handleLogout = async () => {
+    if (user?.id === 'mock-user-id') return;
     await supabase.auth.signOut();
     router.push('/login');
   };
@@ -27,19 +37,42 @@ export function Header({ user }: { user: any }) {
     setLanguage(language === 'en' ? 'ar' : 'en');
   };
 
+  const toggleTheme = () => {
+    setTheme(theme === 'dark' ? 'light' : 'dark');
+  };
+
   return (
     <header className="h-16 border-b bg-background px-6 flex items-center justify-between">
       <div className="flex items-center gap-4">
         <h1 className="text-xl font-semibold">VirtualBoard AI</h1>
       </div>
-      
-      <div className="flex items-center gap-4">
+
+      <div className="flex items-center gap-2">
+        {/* Language Toggle */}
         <Button variant="ghost" size="icon" onClick={toggleLanguage} title="Switch Language">
           <Globe className="h-5 w-5" />
           <span className="sr-only">Switch Language</span>
-          <span className="ml-2 text-sm font-medium uppercase">{language}</span>
         </Button>
 
+        {/* Dark Mode Toggle */}
+        {mounted && (
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={toggleTheme}
+            title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+            className="transition-transform hover:scale-110"
+          >
+            {theme === 'dark' ? (
+              <Sun className="h-5 w-5 rotate-0 scale-100 transition-all" />
+            ) : (
+              <Moon className="h-5 w-5 rotate-0 scale-100 transition-all" />
+            )}
+            <span className="sr-only">Toggle theme</span>
+          </Button>
+        )}
+
+        {/* User Menu */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="relative h-8 w-8 rounded-full">
@@ -53,11 +86,11 @@ export function Header({ user }: { user: any }) {
           <DropdownMenuContent className="w-56" align="end" forceMount>
             <div className="flex items-center justify-start gap-2 p-2">
               <div className="flex flex-col space-y-1 leading-none">
-              <p className="font-medium">User</p>
-              <p className="w-[200px] truncate text-sm text-muted-foreground">
-                {user?.email || 'user@example.com'}
-              </p>
-            </div>
+                <p className="font-medium">User</p>
+                <p className="w-[200px] truncate text-sm text-muted-foreground">
+                  {user?.email || 'user@example.com'}
+                </p>
+              </div>
             </div>
             <DropdownMenuItem asChild>
               <Link href="/dashboard/settings">
@@ -71,10 +104,12 @@ export function Header({ user }: { user: any }) {
                 Settings
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={handleLogout}>
-              <LogOut className="mr-2 h-4 w-4" />
-              Log out
-            </DropdownMenuItem>
+            {user?.id !== 'mock-user-id' && (
+              <DropdownMenuItem onClick={handleLogout}>
+                <LogOut className="mr-2 h-4 w-4" />
+                Log out
+              </DropdownMenuItem>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

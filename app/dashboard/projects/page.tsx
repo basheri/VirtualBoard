@@ -30,11 +30,8 @@ export default async function ProjectsPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) {
-    return <div>Please log in to view your projects.</div>;
-  }
 
-  const projects = await getProjects(user.id);
+  const projects = await getProjects(user!.id);
 
   return (
     <div className="container mx-auto p-6">
@@ -74,9 +71,9 @@ export default async function ProjectsPage() {
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-lg">{project.title}</CardTitle>
-                    <Badge 
-                      variant={project.strategy === 'GROWTH' ? 'default' : 
-                              project.strategy === 'SAFETY' ? 'destructive' : 'secondary'}
+                    <Badge
+                      variant={project.strategy === 'GROWTH' ? 'default' :
+                        project.strategy === 'SAFETY' ? 'destructive' : 'secondary'}
                     >
                       {project.strategy}
                     </Badge>

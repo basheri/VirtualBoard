@@ -2,20 +2,21 @@ import type { Metadata } from 'next';
 import { Plus_Jakarta_Sans, IBM_Plex_Sans, IBM_Plex_Sans_Arabic } from 'next/font/google';
 import './globals.css';
 import { Toaster } from '@/components/ui/sonner';
+import { ThemeProvider } from '@/components/theme-provider';
 
-const plusJakartaSans = Plus_Jakarta_Sans({ 
+const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
   variable: '--font-heading',
 });
 
-const ibmPlexSans = IBM_Plex_Sans({ 
+const ibmPlexSans = IBM_Plex_Sans({
   subsets: ['latin'],
   weight: ['400', '500', '600'],
   variable: '--font-sans',
 });
 
-const ibmPlexSansArabic = IBM_Plex_Sans_Arabic({ 
+const ibmPlexSansArabic = IBM_Plex_Sans_Arabic({
   subsets: ['arabic'],
   weight: ['400', '500', '600'],
   variable: '--font-arabic',
@@ -34,12 +35,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${plusJakartaSans.variable} ${ibmPlexSans.variable} ${ibmPlexSansArabic.variable}`}>
+    <html lang="en" className={`${plusJakartaSans.variable} ${ibmPlexSans.variable} ${ibmPlexSansArabic.variable}`} suppressHydrationWarning>
       <body className="font-sans antialiased">
-        <LanguageProvider>
-          {children}
-          <Toaster />
-        </LanguageProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <LanguageProvider>
+            {children}
+            <Toaster />
+          </LanguageProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -11,15 +11,11 @@ export async function deleteDocumentAction(documentId: string, projectId: string
     throw new Error('Unauthorized');
   }
 
-  // Verify ownership via RLS or explicit check (RLS is safer but explicit check is good for UX feedback)
-  // We assume RLS policies are in place, but we can also check if the user is a member of the project
-  // For now, simple delete.
-
   const { error } = await supabase
     .from('documents')
     .delete()
     .eq('id', documentId)
-    .eq('project_id', projectId); // Extra safety
+    .eq('project_id', projectId);
 
   if (error) {
     console.error('Error deleting document:', error);
